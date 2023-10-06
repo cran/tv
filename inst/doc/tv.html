@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Time Varying</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Time Varying</h1>
+
+
+
+<div id="what-exactly-does-tvtime_varying-do" class="section level1">
+<h1>What exactly does <code>tv::time_varying()</code> do?</h1>
+<p>Given data X, specs, and exposures</p>
+<ul>
+<li><p>For every patient or row e in the exposures:</p>
+<ul>
+<li><p>Let X = filter the data X to current patient</p></li>
+<li><p>construct the “grid”:</p>
+<ul>
+<li><p>Let f = the features from specs with
+<code>use_for_grid=TRUE</code></p></li>
+<li><p>Let grid_times = the unique datetimes in X with features in f and
+datetime between e$exposure_start and e$exposure_stop</p></li>
+</ul></li>
+<li><p>The grid is now a one-row-per-break dataset, with the first break
+at e$exposure_start and the last break before e$exposure_end</p></li>
+<li><p>for grid period g in grid:</p>
+<ul>
+<li><p>for row s in specs:</p>
+<ul>
+<li><p>Let xx = filter data X to X$feature == s$feature and X$datetime
+in the interval (g$row_start - s$lookback_end, g$row_start -
+s$lookback_start)</p></li>
+<li><p>perform the aggregation s$aggregation on xx</p></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<div id="faq" class="section level1">
+<h1>FAQ</h1>
+<div id="does-tv-really-loop-over-every-single-feature-for-every-row-in-the-grid-independently" class="section level2">
+<h2>1. Does <code>tv</code> really loop over every single feature for
+every row in the grid independently?</h2>
+<p>Yes. This is a lot of looping and a good reason to use more than one
+core.</p>
+</div>
+<div id="does-tv-require-any-exposure-history-to-get-the-counts-or-time-since-right" class="section level2">
+<h2>2. Does <code>tv</code> require any exposure history to get the
+counts or time-since right?</h2>
+<p>No. Each row is considered independently.</p>
+</div>
+<div id="the-look-back-in-the-specs-is-relative-to-what-point-in-time" class="section level2">
+<h2>3. The look back in the specs is relative to what point in
+time?</h2>
+<p>Usually the current grid row start time.</p>
+</div>
+<div id="can-i-get-the-grid-returned-to-me-so-i-can-see-what-its-doing" class="section level2">
+<h2>4. Can I get the grid returned to me so I can see what it’s
+doing?</h2>
+<p>As of version <code>1.7.0</code> you can; use
+<code>tv::time_varying(grid.only = TRUE)</code>.</p>
+</div>
+<div id="why-is-my-tv-on-prospective-patients-really-slow" class="section level2">
+<h2>5. Why is my <code>tv</code> on prospective patients really
+slow?</h2>
+<p>Probably you misunderstand the exposure dataset. You really only want
+the current exposure in the grid with no other breakpoints, so set your
+exposure start to (e.g.) the current time and the exposure end to (e.g.)
+the current time plus one second.</p>
+</div>
+</div>
+<div id="an-example" class="section level1">
+<h1>An example</h1>
+<p>Another example of how to use time-varying. Let’s say we want to
+break every 6 hours. Just add that as a feature. Here we give it a count
+with infinite look back, to count the 6-hour period we’re in. We also
+want to include the endpoint, which we encode with aggregation
+“event”.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tv)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Attaching package: &#39;dplyr&#39;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; The following objects are masked from &#39;package:stats&#39;:</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     filter, lag</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; The following objects are masked from &#39;package:base&#39;:</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Attaching package: &#39;lubridate&#39;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; The following objects are masked from &#39;package:base&#39;:</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     date, intersect, setdiff, union</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span> pat_id, <span class="sc">~</span> feature, <span class="sc">~</span> datetime, <span class="sc">~</span> value,</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span>, <span class="st">&quot;lactate&quot;</span>, <span class="st">&quot;2021-12-31 23:00:00&quot;</span>, <span class="dv">9</span>,</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span>, <span class="st">&quot;lactate&quot;</span>, <span class="st">&quot;2022-01-01 03:41:00&quot;</span>, <span class="dv">10</span>,</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span>, <span class="st">&quot;lactate&quot;</span>, <span class="st">&quot;2022-01-01 07:00:00&quot;</span>, <span class="dv">11</span>,</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span>, <span class="st">&quot;blood pressure&quot;</span>, <span class="st">&quot;2022-01-01 02:00:00&quot;</span>, <span class="dv">120</span>,</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span>, <span class="st">&quot;blood pressure&quot;</span>, <span class="st">&quot;2022-01-01 04:00:00&quot;</span>, <span class="dv">115</span>,</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span>, <span class="st">&quot;blood pressure&quot;</span>, <span class="st">&quot;2022-01-01 06:00:00&quot;</span>, <span class="dv">118</span>,</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span>, <span class="st">&quot;6-hour&quot;</span>, <span class="st">&quot;2022-01-01 00:00:00&quot;</span>, <span class="cn">NA_real_</span>,</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span>, <span class="st">&quot;6-hour&quot;</span>, <span class="st">&quot;2022-01-01 06:00:00&quot;</span>, <span class="cn">NA_real_</span>,</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span>, <span class="st">&quot;6-hour&quot;</span>, <span class="st">&quot;2022-01-01 12:00:00&quot;</span>, <span class="cn">NA_real_</span>,</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span>, <span class="st">&quot;6-hour&quot;</span>, <span class="st">&quot;2022-01-01 18:00:00&quot;</span>, <span class="cn">NA_real_</span>,</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span>, <span class="st">&quot;event&quot;</span>, <span class="st">&quot;2022-01-01 08:00:00&quot;</span>, <span class="cn">NA_real_</span>,</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span>, <span class="st">&quot;event&quot;</span>, <span class="st">&quot;2022-01-01 13:00:00&quot;</span>, <span class="cn">NA_real_</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">datetime =</span> <span class="fu">as_datetime</span>(datetime))</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>specs <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span> feature, <span class="sc">~</span> use_for_grid, <span class="sc">~</span> lookback_start, <span class="sc">~</span> lookback_end, <span class="sc">~</span> aggregation,</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;lactate&quot;</span>, <span class="cn">TRUE</span>, <span class="dv">0</span>, <span class="cn">Inf</span>, <span class="st">&quot;ts&quot;</span>,</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;lactate&quot;</span>, <span class="cn">TRUE</span>, <span class="dv">0</span>, <span class="cn">Inf</span>, <span class="st">&quot;lvcf&quot;</span>,</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;blood pressure&quot;</span>, <span class="cn">FALSE</span>, <span class="dv">0</span>, <span class="dv">7200</span>, <span class="st">&quot;ts&quot;</span>, <span class="co"># two hours</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;blood pressure&quot;</span>, <span class="cn">FALSE</span>, <span class="dv">0</span>, <span class="dv">7200</span>, <span class="st">&quot;lvcf&quot;</span>, <span class="co"># two hours</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;6-hour&quot;</span>, <span class="cn">TRUE</span>, <span class="dv">0</span>, <span class="cn">Inf</span>, <span class="st">&quot;n&quot;</span>,</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;event&quot;</span>, <span class="cn">TRUE</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="st">&quot;event&quot;</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>exposure <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>  <span class="at">pat_id =</span> <span class="dv">1</span>,</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>  <span class="at">encounter =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="co"># optional id</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>  <span class="at">exposure_start =</span> <span class="fu">as_datetime</span>(<span class="fu">c</span>(<span class="st">&quot;2022-01-01 00:00:00&quot;</span>, <span class="st">&quot;2022-01-01 08:00:00&quot;</span>)),</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">exposure_stop =</span> <span class="fu">as_datetime</span>(<span class="fu">c</span>(<span class="st">&quot;2022-01-01 08:00:00&quot;</span>, <span class="st">&quot;2022-01-01 13:00:00&quot;</span>)),</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="fu">time_varying</span>(data, specs, <span class="at">exposure =</span> exposure, <span class="at">time_units =</span> <span class="st">&quot;seconds&quot;</span>, <span class="at">n_cores =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(pat_id, row_start)</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   pat_id encounter      exposure_start       exposure_stop           row_start</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1      1         1 2022-01-01 00:00:00 2022-01-01 08:00:00 2022-01-01 00:00:00</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2      1         1 2022-01-01 00:00:00 2022-01-01 08:00:00 2022-01-01 03:41:00</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3      1         1 2022-01-01 00:00:00 2022-01-01 08:00:00 2022-01-01 06:00:00</span></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4      1         1 2022-01-01 00:00:00 2022-01-01 08:00:00 2022-01-01 07:00:00</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5      1         2 2022-01-01 08:00:00 2022-01-01 13:00:00 2022-01-01 08:00:00</span></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6      1         2 2022-01-01 08:00:00 2022-01-01 13:00:00 2022-01-01 12:00:00</span></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;              row_stop lactate_ts lactate_lvcf blood pressure_ts</span></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 2022-01-01 03:41:00       3600            9                NA</span></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 2022-01-01 06:00:00          0           10              6060</span></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 2022-01-01 07:00:00       8340           10                 0</span></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 2022-01-01 08:00:00          0           11              3600</span></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 2022-01-01 12:00:00       3600           11              7200</span></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 2022-01-01 13:00:00      18000           11                NA</span></span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   blood pressure_lvcf 6-hour_count event_event</span></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1                  NA            1           0</span></span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2                 120            1           0</span></span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3                 118            2           0</span></span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4                 118            2           1</span></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5                 118            2           0</span></span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6                  NA            3           1</span></span></code></pre></div>
+<p>Note that the lactate lab from 2021 does not contribute to a new row
+because it is not inside the exposure window. Note also that the look
+back is ignored for aggregation of type “event”.</p>
+</div>
+<div id="overclocking-the-time_varying-function" class="section level1">
+<h1>Overclocking the <code>time_varying()</code> function</h1>
+<div id="what-if-a-variable-doesnt-change-over-the-exposure" class="section level2">
+<h2>What if a variable doesn’t change over the exposure?</h2>
+<p>Run two tv’s and merge the results: one for static variables and one
+for dynamic variables.</p>
+</div>
+<div id="multiple-exposures-per-person" class="section level2">
+<h2>Multiple exposures per person</h2>
+<p>If there are multiple encounters per person, you can just add another
+row to the exposure data, and tag it with another id column which gets
+carried forward by <code>time_varying()</code>.</p>
+</div>
+<div id="only-look-back-to-the-beginning-of-the-exposure-instead-of-a-fixed-look-back" class="section level2">
+<h2>Only look back to the beginning of the exposure instead of a fixed
+look back</h2>
+<p>Simply pass the special value NA in the “lookback_end” column.</p>
+</div>
+<div id="only-look-at-things-from-before-the-exposure-instead-of-a-fixed-look-back" class="section level2">
+<h2>Only look at things from before the exposure instead of a fixed look
+back</h2>
+<p>Simply pass the special value NA in the “lookback_start” column.
+You’ll probably also want something like “lookback_end = Inf”.</p>
+</div>
+<div id="only-break-every-hour" class="section level2">
+<h2>Only break every hour</h2>
+<p>Set <code>use_for_grid=FALSE</code> for everything except an “hourly”
+feature. Then calculate every hour that the patient is at risk; set
+“feature” to “hourly”, set “datetime” to the time stamp, and set “value”
+to <code>hour(datetime)</code>.</p>
+</div>
+<div id="create-an-indicator-for-if-a-situation-applies" class="section level2">
+<h2>Create an indicator for if a situation applies</h2>
+<p>Start with a dataset of start time and end time. IMPORTANT: be sure
+no intervals overlap; if they do, the next section would be better
+suited for you. Otherwise, the pseudocode below should do the trick:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="fu">c</span>(start_time, end_time), <span class="at">names_to =</span> <span class="st">&quot;which_time&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;datetime&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">value =</span> <span class="sc">+</span>(which_time <span class="sc">==</span> <span class="st">&quot;start_time&quot;</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<p>Then make the specs a “lvcf” with infinite look back.</p>
+</div>
+<div id="create-a-count-of-how-many-times-a-situation-applies" class="section level2">
+<h2>Create a count of how many times a situation applies</h2>
+<p>Start with a dataset of start time and end time. The pseudocode below
+should do the trick:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="fu">c</span>(start_time, end_time), <span class="at">names_to =</span> <span class="st">&quot;which_time&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;datetime&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(pat_id, datetime) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(pat_id) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">value =</span> <span class="fu">cumsum</span>(<span class="fu">ifelse</span>(which_time <span class="sc">==</span> <span class="st">&quot;start_time&quot;</span>, <span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>()</span></code></pre></div>
+<p>Then make the specs a “lvcf” with infinite look back.</p>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
