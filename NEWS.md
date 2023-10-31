@@ -1,3 +1,9 @@
+# tv v2.0.0
+
+- Completely overhauled the internals, for a decent speed boost.
+  In dense data, the speed up in practice is on the order of ~2x.
+  In sparse data, the speed up has been witnessed as high as ~25x.
+
 # tv v1.7.3
 
 - Added return values to the documentation and resubmitted to CRAN.
