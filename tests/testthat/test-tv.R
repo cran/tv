@@ -178,3 +178,95 @@ test_that("all-NA values passed to min/max are detected and not warned", {
 
 })
 
+
+
+test_that("zero-length exposures are detected", {
+  expect_error(
+    time_varying(
+      data.frame(pat_id = 1:2, feature = "lab", datetime = as.Date("2022-01-01"), value = 1),
+      specs = data.frame(
+        feature = "lab",
+        use_for_grid = FALSE,
+        lookback_start = 0,
+        lookback_end = 10,
+        aggregation = "lvcf"
+      ),
+      exposure = data.frame(
+        pat_id = c(1, 2),
+        exposure_start = as.Date(c("2022-01-01", "2022-01-02")),
+        exposure_stop = as.Date(c("2022-01-01", "2022-01-04"))
+      )
+    ),
+    "There are zero- or negative-length"
+  )
+
+})
+
+
+
+test_that("sorting is done right", {
+  expect_message(
+    time_varying(
+      data.frame(pat_id = c(1, 1), feature = "lab", datetime = as.Date("2022-01-01"), value = c(1, 0)),
+      specs = data.frame(
+        feature = "lab",
+        use_for_grid = FALSE,
+        lookback_start = 0,
+        lookback_end = 10,
+        aggregation = "lvcf"
+      ),
+      exposure = data.frame(
+        pat_id = c(1),
+        exposure_start = as.Date(c("2022-01-01")),
+        exposure_stop = as.Date(c("2022-01-02"))
+      )
+    ),
+    "be sure that your data is sorted in descending datetime order"
+  )
+  expect_equal(
+    time_varying(
+      data.frame(pat_id = c(1, 1), feature = "lab", datetime = as.POSIXct(c("2022-01-01 00:00:00", "2022-01-01 00:00:01")), value = c(1, 0)),
+      specs = data.frame(
+        feature = "lab",
+        use_for_grid = FALSE,
+        lookback_start = 0,
+        lookback_end = 10,
+        aggregation = "lvcf"
+      ),
+      exposure = data.frame(
+        pat_id = c(1),
+        exposure_start = as.Date(c("2022-01-01")),
+        exposure_stop = as.Date(c("2022-01-02"))
+      )
+    )$lab_lvcf,
+    0
+  )
+  expect_equal(
+    time_varying(
+      data.frame(pat_id = c(1, 1), feature = "lab", datetime = as.POSIXct(c("2022-01-01 00:00:00", "2022-01-01 00:00:01")), value = c(1, 0)),
+      specs = data.frame(
+        feature = "lab",
+        use_for_grid = FALSE,
+        lookback_start = 0,
+        lookback_end = 10,
+        aggregation = "lvcf"
+      ),
+      exposure = data.frame(
+        pat_id = c(1),
+        exposure_start = as.Date(c("2022-01-01")),
+        exposure_stop = as.Date(c("2022-01-02"))
+      ),
+      sort = FALSE # induce the bad behavior
+    )$lab_lvcf,
+    1 # !!! the wrong answer!
+  )
+})
+
+
+
+
+
+
+
+
+

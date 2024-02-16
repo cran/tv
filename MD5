@@ -1,9 +1,9 @@
-96e52ae0b21455d9f6d11490ac3c3e99 *DESCRIPTION
+7e1ec5fb2a61d2eab5f32938390ebb97 *DESCRIPTION
 27a61217ed5cd9ebd0b406a24692e19b *NAMESPACE
-8a26c8aeea690a224817d12bd662fc96 *NEWS.md
+7a1c648fef6f6c90e7d2153395e25fd1 *NEWS.md
 07df1f923036ecaeefd09dcc80a47788 *R/aggregation.R
 2e6e0e137572458846d562c37b7d6bea *R/reexports.R
-58462fee8ea0e1afbd956f16aafd407f *R/tv.R
+a25022e50b86672f667491d8e66ed738 *R/tv.R
 fbffcc35f97ac04b31b0c3635bcec3ce *R/tv_example.R
 8e27d7d9715711da8380e419218baeed *README.md
 925526dc38940262e82819b8a1a50209 *build/vignette.rds
@@ -12,9 +12,9 @@ fbffcc35f97ac04b31b0c3635bcec3ce *R/tv_example.R
 9fb28875357b65343fcfb0551ed0ddb4 *inst/doc/tv.Rmd
 f9dcbbdf0ed273dcebb538e87098f139 *inst/doc/tv.html
 6f62fce0a4b0cebd551b892a0ffc08b3 *man/reexports.Rd
-0d98873a3f3c0e0df9845e1cf1c5bf8d *man/tv.Rd
+30e21e37a31012e00a12bb683f6134f2 *man/tv.Rd
 ccba2b7ee1d68e6119e76b957ea35956 *man/tv_aggregation.Rd
 a46c7dd95739fe0560c9b283a17efb02 *man/tv_example.Rd
 8f43e91c65e656bc461a23c245240c0a *tests/testthat.R
-d3e4ef22d598f6c6e9f9fbf4b1e776c1 *tests/testthat/test-tv.R
+bcfee4d9fa4c457cf4da05d70cc90a1c *tests/testthat/test-tv.R
 9fb28875357b65343fcfb0551ed0ddb4 *vignettes/tv.Rmd
